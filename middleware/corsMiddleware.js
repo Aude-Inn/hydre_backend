@@ -5,23 +5,30 @@ dotenv.config();
 
 const corsMiddleware = cors({
   origin: (origin, callback) => {
-    console.log("Requête provenant de :", origin)
+    console.log("🌐 Requête provenant de :", origin);
+
     const allowedOrigins = [
       'http://localhost:5173',
       'http://localhost:3000',
       'https://hydre-frontend.vercel.app',
       'https://hydre-backend.onrender.com',
     ];
-    if (!origin || allowedOrigins.includes(origin)) {
+
+    // Restreindre aux domaines Vercel qui commencent par 'hydre-'
+    if (
+      !origin ||
+      allowedOrigins.includes(origin) ||
+      (origin.includes(".vercel.app") && origin.startsWith("https://hydre-"))
+    ) {
       callback(null, true);
     } else {
-      console.warn("CORS refusé pour :", origin); 
-      callback(new Error('Not allowed by CORS'));
+      console.warn("⛔ CORS refusé pour :", origin);
+      callback(new Error("Not allowed by CORS"));
     }
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 });
 
 export default corsMiddleware;
