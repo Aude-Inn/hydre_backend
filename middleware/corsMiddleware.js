@@ -14,7 +14,6 @@ const corsMiddleware = cors({
       'https://hydre-backend.onrender.com',
     ];
 
-    // Restreindre aux domaines Vercel qui commencent par 'hydre-'
     if (
       !origin ||
       allowedOrigins.includes(origin) ||
