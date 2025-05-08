@@ -100,8 +100,8 @@ export const forgotPassword = async (req, res) => {
 
 // Réinitialisation du mot de passe avec le token
 export const resetPassword = async (req, res) => {
-  const { token } = req.params; // Récupérer le token depuis l'URL
-  const { password } = req.body; // Récupérer le mot de passe depuis le body
+  const { token } = req.params;
+  const { password } = req.body;
 
   if (!token || !password) {
     return res.status(400).json({ message: "Token et mot de passe requis" });
@@ -125,10 +125,18 @@ export const resetPassword = async (req, res) => {
     user.resetPasswordExpires = undefined;
     await user.save();
 
-    res.status(200).json({ message: "Mot de passe réinitialisé avec succès" });
+    // Générer un nouveau token après la réinitialisation du mot de passe
+    const newToken = generateToken(user.id, user.name, user.role);
+
+    // Renvoi de la réponse avec le nouveau token
+    res.status(200).json({
+      message: "Mot de passe réinitialisé avec succès",
+      token: newToken,
+    });
   } catch (err) {
     console.error(err);  // Log l'erreur pour le débogage
     res.status(500).json({ message: "Erreur serveur, veuillez réessayer plus tard" });
   }
 };
+
 
