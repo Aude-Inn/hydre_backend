@@ -18,7 +18,7 @@ router.post("/logout", logoutUser);
 // forgot MDP
 router.post('/forgot-password', forgotPassword);
 // reset MDP
-router.post('/reset-password', resetPassword);
+router.post('/reset-password/:token', resetPassword); 
 
 export default router;
 
