@@ -9,11 +9,11 @@ dotenv.config();
 
 const generateToken = (id, name, role) => {
   return jwt.sign({ id, name, role }, process.env.JWT_SECRET, {
-    expiresIn: "1h", // Expiration du token : 1 heure
+    expiresIn: "1h", 
   });
 };
 
-// Connexion d'un utilisateur
+// Co
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -41,7 +41,7 @@ export const loginUser = async (req, res) => {
   }
 };
 
-// Inscription d'un utilisateur
+// Inscription 
 export const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -59,12 +59,12 @@ export const registerUser = async (req, res) => {
   }
 };
 
-// Déconnexion d'un utilisateur
+// Déco
 export const logoutUser = (req, res) => {
   res.json({ message: "Déconnexion réussie" });
 };
 
-// Demande de réinitialisation de mot de passe
+// Demande de réinitialisation du mdp
 export const forgotPassword = async (req, res) => {
   const { email } = req.body;
 
@@ -78,13 +78,12 @@ export const forgotPassword = async (req, res) => {
       });
     }
 
-    // Générer un token aléatoire pour la réinitialisation du mot de passe
+    
     const token = crypto.randomBytes(32).toString("hex");
     user.resetPasswordToken = token;
-    user.resetPasswordExpires = Date.now() + 3600000; // 1 heure de validité
+    user.resetPasswordExpires = Date.now() + 3600000; 
     await user.save();
 
-    // Envoi de l'email de réinitialisation
     const emailSent = await sendResetPasswordEmail(user.email, user.name, token);
     if (!emailSent) {
       return res.status(500).json({ message: "Erreur lors de l'envoi de l'email" });
@@ -98,7 +97,7 @@ export const forgotPassword = async (req, res) => {
   }
 };
 
-// Réinitialisation du mot de passe avec le token
+
 export const resetPassword = async (req, res) => {
   const { token } = req.params;
   const { password } = req.body;
@@ -108,33 +107,31 @@ export const resetPassword = async (req, res) => {
   }
 
   try {
-    // Trouver l'utilisateur avec le token valide
+   
     const user = await User.findOne({
       resetPasswordToken: token,
-      resetPasswordExpires: { $gt: Date.now() }, // Vérifier que le token est toujours valide
+      resetPasswordExpires: { $gt: Date.now() }, 
     });
 
     if (!user) {
       return res.status(400).json({ message: "Token invalide ou expiré" });
     }
 
-    // Hachage du nouveau mot de passe avant de le sauvegarder
-    const hashedPassword = await bcrypt.hash(password, 10);
-    user.password = hashedPassword;
+    user.password = password;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
     await user.save();
 
-    // Générer un nouveau token après la réinitialisation du mot de passe
+   
     const newToken = generateToken(user.id, user.name, user.role);
 
-    // Renvoi de la réponse avec le nouveau token
+   
     res.status(200).json({
       message: "Mot de passe réinitialisé avec succès",
       token: newToken,
     });
   } catch (err) {
-    console.error(err);  // Log l'erreur pour le débogage
+    console.error(err);  
     res.status(500).json({ message: "Erreur serveur, veuillez réessayer plus tard" });
   }
 };
