@@ -9,10 +9,10 @@ import {
 
 const router = express.Router();
 
-router.post("/games", createGame); // Créer
-router.get("/games", getAllGames); // Obtient tous
-router.get("/games/:id", getGame); // un jeu par ID
-router.put("/games/:id", updateGame); // Update du jeu
-router.delete("/games/:id", deleteGame); // Supprime par l'id
+router.post("/", createGame);        // Créer un jeu
+router.get("/", getAllGames);        // Obtenir tous les jeux
+router.get("/:id", getGame);         // Obtenir un jeu par ID
+router.put("/:id", updateGame);      // Mettre à jour un jeu
+router.delete("/:id", deleteGame);   // Supprimer un jeu par ID
 
 export default router;

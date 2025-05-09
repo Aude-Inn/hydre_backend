@@ -3,8 +3,8 @@ import Notification from '../models/Notification.js';
 
 const router = express.Router();
 
-// Récupérer les notifications
-router.get("/notifications", async (req, res) => {
+// Récupérer les notif
+router.get("/", async (req, res) => {
   try {
     const notifications = await Notification.find().sort({ timestamp: -1 }); 
     res.status(200).json(notifications);
