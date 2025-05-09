@@ -9,17 +9,17 @@ import {
 
 const router = express.Router();
 
-// le profil de l'utilisateur connecté
-router.get("/profile", protect, getUser);
+// Récupérer le profil de l'utilisateur connecté
+router.get("/me", protect, getUser);
 
-// tous les utilisateurs
-router.get("/allUsers", protect, getAllUsers);
+// Récupérer tous les utilisateurs
+router.get("/", protect, getAllUsers);
 
-// mettre à jour les données de l'utilisateur connecté
-router.put("/updateUser", protect, updateUser);
+// Mettre à jour le profil de l'utilisateur connecté
+router.put("/me", protect, updateUser);
 
-// supprimer un utilisateur par son ID
-router.delete("/user/:id", protect, deleteUser);
+// Supprimer un utilisateur par son ID (admin)
+router.delete("/:id", protect, deleteUser);
 
 export default router;
 
