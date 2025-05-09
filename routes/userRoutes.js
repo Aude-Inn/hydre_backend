@@ -4,6 +4,7 @@ import {
   getAllUsers,
   getUser,
   updateUser,
+  updateUserById,
   deleteUser
 } from "../controllers/userController.js";
 
@@ -17,6 +18,8 @@ router.put("/me", protect, updateUser);
 
 // Récupérer tous les utilisateurs
 router.get("/", protect, getAllUsers);
+
+router.put("/:id", protect, updateUserById);
 
 // Supprimer un utilisateur par son ID (admin)
 router.delete("/:id", protect, deleteUser);

@@ -70,3 +70,21 @@ export const deleteUser = async (req, res) => {
     res.status(500).json({ message: "Erreur lors de la suppression de l'utilisateur" });
   }
 };
+
+export const updateUserById = async (req, res) => {
+  const { name, email, role } = req.body;
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user)
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+
+    user.name = name || user.name;
+    user.email = email || user.email;
+    user.role = role || user.role;
+
+    await user.save();
+    res.json({ message: "Utilisateur mis à jour", user });
+  } catch {
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+};
