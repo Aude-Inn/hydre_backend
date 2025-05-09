@@ -3,23 +3,23 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-// Configuration du transporteur pour Nodemailer (Service Gmail ici)
+
 const transporter = nodemailer.createTransport({
-  service: "gmail", // Utilisation du service Gmail pour l'envoi
+  service: "gmail", 
   auth: {
     user: process.env.EMAIL_USER,  // Ton email
-    pass: process.env.EMAIL_PASSWORD,  // Le mot de passe ou l'App Password Gmail
+    pass: process.env.EMAIL_PASSWORD,  // Le mot de passe 
   },
 });
 
-// Fonction pour envoyer l'email de réinitialisation
+
 const sendResetPasswordEmail = async (email, name, token) => {
-  const resetUrl = `${process.env.CLIENT_URL}/reset-password/${token}`; // Lien de réinitialisation généré avec le token
+  const resetUrl = `${process.env.CLIENT_URL}/reset-password/${token}`; 
 
   const mailOptions = {
-    from: `"Hydre - Support" <${process.env.EMAIL_USER}>`,  // Nom de l'expéditeur avec l'adresse email
-    to: email,  // L'email du destinataire
-    subject: "Réinitialisation de votre mot de passe",  // Sujet de l'email
+    from: `"Hydre - Support" <${process.env.EMAIL_USER}>`,  
+    to: email,  
+    subject: "Réinitialisation de votre mot de passe", 
     html: `  <!-- HTML contenu du message -->
       <h1>Bonjour ${name},</h1>
       <p>Nous avons reçu une demande de réinitialisation de mot de passe pour votre compte.</p>
@@ -33,11 +33,11 @@ const sendResetPasswordEmail = async (email, name, token) => {
   };
 
   try {
-    await transporter.sendMail(mailOptions);  // Envoi de l'email
-    return true;  // Retourne true si l'email a été envoyé avec succès
+    await transporter.sendMail(mailOptions);  
+    return true; 
   } catch (error) {
-    console.error("Erreur lors de l'envoi de l'email:", error);  // Log l'erreur
-    return false;  // Retourne false si l'envoi a échoué
+    console.error("Erreur lors de l'envoi de l'email:", error);  
+    return false;  
   }
 };
 

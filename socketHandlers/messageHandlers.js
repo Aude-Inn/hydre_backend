@@ -2,7 +2,7 @@ import Message from "../models/Message.js";
 import User from "../models/User.js";
 
 const messageHandlers = (io, socket) => {
-  // Historique des messages
+  // Historique 
   socket.on("request_history", async () => {
     try {
       const messages = await Message.find().sort({ timestamp: 1 });
