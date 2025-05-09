@@ -25,11 +25,12 @@ app.use(express.json());
 app.use(corsMiddleware);
 
 // Routes API
-app.use(authRoutes);
-app.use(gameRoutes);
-app.use(userRoutes);
-app.use(messRoutes);
-app.use(notifRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/games", gameRoutes);
+app.use("/api/messages", messRoutes);
+app.use("/api/notifs", notifRoutes);
+app.use("/api/users", userRoutes);
+
 
 
 const io = socketServer(server);
