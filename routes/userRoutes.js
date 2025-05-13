@@ -10,18 +10,19 @@ import {
 
 const router = express.Router();
 
-// Récupérer le profil de l'utilisateur connecté
+// Profil user co
 router.get("/me", protect, getUser);
 
-// Mettre à jour le profil de l'utilisateur connecté
+// Update user(a verifier si util)
 router.put("/me", protect, updateUser);
 
-// Récupérer tous les utilisateurs
+// all user
 router.get("/", protect, getAllUsers);
 
+// update user by id
 router.put("/:id", protect, updateUserById);
 
-// Supprimer un utilisateur par son ID (admin)
+// delete user by id
 router.delete("/:id", protect, deleteUser);
 
 export default router;

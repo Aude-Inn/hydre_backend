@@ -3,6 +3,7 @@ import Message from '../models/Message.js';
 
 const router = express.Router();
 
+// delete mess by id
 router.delete('/messages/:id', async (req, res) => {
   try {
     await Message.findByIdAndDelete(req.params.id);

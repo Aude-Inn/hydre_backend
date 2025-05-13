@@ -8,11 +8,19 @@ import {
 } from "../controllers/gameController.js";
 
 const router = express.Router();
+// créer un jeu
+router.post("/", createGame);       
 
-router.post("/", createGame);        // Créer un jeu
-router.get("/", getAllGames);        // Obtenir tous les jeux
-router.get("/:id", getGame);         // Obtenir un jeu par ID
-router.put("/:id", updateGame);      // Mettre à jour un jeu
-router.delete("/:id", deleteGame);   // Supprimer un jeu par ID
+// all games
+router.get("/", getAllGames);        
+
+// game by id
+router.get("/:id", getGame);         
+
+// update game
+router.put("/:id", updateGame);      
+
+// delete game by id
+router.delete("/:id", deleteGame);   
 
 export default router;

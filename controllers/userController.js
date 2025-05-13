@@ -14,7 +14,7 @@ export const getUser = async (req, res) => {
   }
 };
 
-// Mise à jour des informations utilisateur
+// update user (peut etre pas utile a verifier)
 export const updateUser = async (req, res) => {
   const { name, email, role } = req.body;
 
@@ -71,6 +71,7 @@ export const deleteUser = async (req, res) => {
   }
 };
 
+// update user by id
 export const updateUserById = async (req, res) => {
   const { name, email, role } = req.body;
   try {

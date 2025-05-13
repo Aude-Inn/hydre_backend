@@ -1,6 +1,7 @@
 import cron from "node-cron";
 import Notification from "../models/Notification.js";
 
+// gestion durée notif one week delete
 const initializeCronJobs = () => {
   
   cron.schedule("0 0 * * *", async () => {
