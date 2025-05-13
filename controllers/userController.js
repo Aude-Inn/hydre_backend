@@ -14,27 +14,27 @@ export const getUser = async (req, res) => {
   }
 };
 
-// update user (peut etre pas utile a verifier)
-export const updateUser = async (req, res) => {
-  const { name, email, role } = req.body;
+// // update user (peut etre pas utile a verifier)
+// export const updateUser = async (req, res) => {
+//   const { name, email, role } = req.body;
 
-  try {
-    const user = await User.findById(req.user._id);
+//   try {
+//     const user = await User.findById(req.user._id);
 
-    if (!user)
-      return res.status(404).json({ message: "Utilisateur non trouvé" });
+//     if (!user)
+//       return res.status(404).json({ message: "Utilisateur non trouvé" });
 
-    user.name = name || user.name;
-    user.email = email || user.email;
-    user.role = role || user.role; 
+//     user.name = name || user.name;
+//     user.email = email || user.email;
+//     user.role = role || user.role; 
 
-    await user.save();
+//     await user.save();
 
-    res.json({ message: "Utilisateur mis à jour", user });
-  } catch {
-    res.status(500).json({ message: "Erreur serveur" });
-  }
-};
+//     res.json({ message: "Utilisateur mis à jour", user });
+//   } catch {
+//     res.status(500).json({ message: "Erreur serveur" });
+//   }
+// };
 
 // Info utilisateurs
 export const getAllUsers = async (req, res) => {

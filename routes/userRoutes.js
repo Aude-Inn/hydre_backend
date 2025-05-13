@@ -13,8 +13,8 @@ const router = express.Router();
 // Profil user co
 router.get("/me", protect, getUser);
 
-// Update user(a verifier si util)
-router.put("/me", protect, updateUser);
+// // Update user(a verifier si util)
+// router.put("/me", protect, updateUser);
 
 // all user
 router.get("/", protect, getAllUsers);
