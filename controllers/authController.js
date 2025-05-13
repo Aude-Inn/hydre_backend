@@ -97,6 +97,7 @@ export const forgotPassword = async (req, res) => {
   }
 };
 
+// gestion du reset pass et new token pour new pass
 
 export const resetPassword = async (req, res) => {
   const { token } = req.params;
