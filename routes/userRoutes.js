@@ -10,7 +10,7 @@ import {
 const router = express.Router();
 
 // Profil user co
-router.get("/", protect, getUser);
+router.get("/me", protect, getUser);
 
 // all user
 router.get("/", protect, getAllUsers);
