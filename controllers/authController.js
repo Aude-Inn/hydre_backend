@@ -103,15 +103,23 @@ export const resetPassword = async (req, res) => {
   const { token } = req.params;
   const { password } = req.body;
 
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/;
+
   if (!token || !password) {
     return res.status(400).json({ message: "Token et mot de passe requis" });
   }
 
+  if (!passwordRegex.test(password)) {
+    return res.status(400).json({
+      message:
+        "Le mot de passe doit contenir au moins 6 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.",
+    });
+  }
+
   try {
-   
     const user = await User.findOne({
       resetPasswordToken: token,
-      resetPasswordExpires: { $gt: Date.now() }, 
+      resetPasswordExpires: { $gt: Date.now() },
     });
 
     if (!user) {
@@ -123,16 +131,14 @@ export const resetPassword = async (req, res) => {
     user.resetPasswordExpires = undefined;
     await user.save();
 
-   
     const newToken = generateToken(user.id, user.name, user.role);
 
-   
     res.status(200).json({
       message: "Mot de passe réinitialisé avec succès",
       token: newToken,
     });
   } catch (err) {
-    console.error(err);  
+    console.error(err);
     res.status(500).json({ message: "Erreur serveur, veuillez réessayer plus tard" });
   }
 };
