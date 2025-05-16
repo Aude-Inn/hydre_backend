@@ -3,6 +3,7 @@ import {
   createGame,
   getGame,
   getAllGames,
+  searchGames,
   updateGame,
   deleteGame,
 } from "../controllers/gameController.js";
@@ -12,7 +13,10 @@ const router = express.Router();
 router.post("/", createGame);       
 
 // all games
-router.get("/", getAllGames);        
+router.get("/", getAllGames); 
+
+// search games
+router.get("/search", searchGames); 
 
 // game by id
 router.get("/:id", getGame);         

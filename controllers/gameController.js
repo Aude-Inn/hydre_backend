@@ -131,3 +131,23 @@ export const deleteGame = async (req, res) => {
   }
 };
 
+// recherche games
+export const searchGames = async (req, res) => {
+  const search = req.query.search?.trim();
+  console.log("Recherche côté serveur :", search);
+
+  if (!search) {
+    
+    return res.status(200).json([]);
+  }
+
+  try {
+    const games = await Game.find({
+      name: { $regex: search, $options: "i" }, 
+    });
+    res.status(200).json(games);
+  } catch (error) {
+    console.error("Erreur lors de la recherche des jeux :", error);
+    res.status(500).json({ message: "Erreur lors de la recherche des jeux" });
+  }
+};
