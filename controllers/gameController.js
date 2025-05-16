@@ -73,15 +73,30 @@ export const getGame = async (req, res) => {
   }
 };
 
-// Get all games
+// en travaux___________________________________________________________________________________________________________________
 export const getAllGames = async (req, res) => {
+  console.log("req.query =", req.query); 
+
+  const search = req.query.search?.trim();
+  console.log("Recherche côté serveur :", search);
+
   try {
-    const games = await Game.find();
+    let games;
+    if (!search) {
+      games = [];
+    } else {
+      games = await Game.find({
+        name: { $regex: search, $options: "i" },
+      });
+    }
     res.status(200).json(games);
-  } catch {
-    return res.status(500).json({ message: "Erreur lors de la récupération des jeux" });
+  } catch (error) {
+    console.error("Erreur lors de la récupération des jeux :", error);
+    res.status(500).json({ message: "Erreur lors de la récupération des jeux" });
   }
 };
+
+// _______________________________________________________________________________________________________________
 
 // Update a game
 export const updateGame = async (req, res) => {
@@ -129,3 +144,4 @@ export const deleteGame = async (req, res) => {
     return res.status(500).json({ message: "Erreur lors de la suppression du jeu" });
   }
 };
+

@@ -2,18 +2,20 @@ import express from "express";
 import { protect } from "../middleware/authMiddleware.js";
 import {
   getAllUsers,
-  getUser,
+  getUserById,
   updateUserById,
   deleteUser
 } from "../controllers/userController.js";
 
 const router = express.Router();
 
-// Profil user co
-router.get("/me", protect, getUser);
+
 
 // all user
 router.get("/", protect, getAllUsers);
+
+// Get user by ID
+router.get("/:id", protect, getUserById);
 
 // update user by id
 router.put("/:id", protect, updateUserById);

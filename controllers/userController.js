@@ -1,9 +1,9 @@
 import User from "../models/User.js";
 
 // Info utilisateur par son id
-export const getUser = async (req, res) => {
+export const getUserById = async (req, res) => {
   try {
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(req.params.id);
 
     if (!user)
       return res.status(404).json({ message: "Utilisateur non trouvé" });
@@ -62,7 +62,7 @@ export const updateUserById = async (req, res) => {
     user.role = role || user.role;
 
     await user.save();
-    res.json({ message: "Utilisateur mis à jour", user });
+    res.json({ updatedUser: user });
   } catch {
     res.status(500).json({ message: "Erreur serveur" });
   }
