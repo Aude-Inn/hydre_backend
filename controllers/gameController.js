@@ -73,30 +73,16 @@ export const getGame = async (req, res) => {
   }
 };
 
-// en travaux___________________________________________________________________________________________________________________
+// All games
 export const getAllGames = async (req, res) => {
-  console.log("req.query =", req.query); 
-
-  const search = req.query.search?.trim();
-  console.log("Recherche côté serveur :", search);
-
   try {
-    let games;
-    if (!search) {
-      games = [];
-    } else {
-      games = await Game.find({
-        name: { $regex: search, $options: "i" },
-      });
-    }
+    const games = await Game.find(); 
     res.status(200).json(games);
   } catch (error) {
     console.error("Erreur lors de la récupération des jeux :", error);
     res.status(500).json({ message: "Erreur lors de la récupération des jeux" });
   }
 };
-
-// _______________________________________________________________________________________________________________
 
 // Update a game
 export const updateGame = async (req, res) => {
