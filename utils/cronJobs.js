@@ -1,17 +1,17 @@
 import cron from "node-cron";
 import Notification from "../models/Notification.js";
 
-// gestion durée notif one week delete
+// Delete notif 5j
 const initializeCronJobs = () => {
-  
-  cron.schedule("0 0 * * *", async () => {
+  cron.schedule("0 0 * * *", async () => { 
     try {
-      const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-      await Notification.deleteMany({ addedAt: { $lt: oneWeekAgo } });
+      const fiveDaysAgo = new Date(Date.now() - 5 * 24 * 60 * 60 * 1000);
+      await Notification.deleteMany({ addedAt: { $lt: fiveDaysAgo } });
     } catch (error) {
-      
+      console.error("Erreur lors de la suppression des notifications :", error);
     }
   });
 };
 
 export default initializeCronJobs;
+
