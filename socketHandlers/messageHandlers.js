@@ -4,7 +4,7 @@ import User from "../models/User.js";
 const connectedUsers = new Map();
 
 const messageHandlers = (io, socket) => {
-  const userId = socket.handshake.query.userId;
+  const userId = socket.handshake.auth.userId;
   if (userId) connectedUsers.set(userId, socket.id);
 
   // Historique des messages (admin)
