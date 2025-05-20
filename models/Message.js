@@ -2,20 +2,25 @@ import mongoose from "mongoose";
 
 const messageSchema = new mongoose.Schema({
   userId: {
-    type: String,
+    type: String, // Expéditeur
     required: true,
-    index: true
+    index: true,
+  },
+  toUserId: {
+    type: String, 
+    required: false, 
+    index: true,
   },
   text: {
     type: String,
     required: true,
     minlength: 1,
-    maxlength: 500
+    maxlength: 500,
   },
   timestamp: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 const Message = mongoose.model("Message", messageSchema);
