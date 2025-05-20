@@ -30,7 +30,7 @@ export const createGame = async (req, res) => {
 
     const newNotification = new Notification({
       name,
-      addedAt: new Date(),
+      timestamp: new Date(),
     });
 
     await newNotification.save();
@@ -39,7 +39,7 @@ export const createGame = async (req, res) => {
     if (io) {
       io.emit("game_notification", {
         name,
-        addedAt: new Date().toISOString(),
+        timestamp: new Date().toISOString(),
       });
     }
 
