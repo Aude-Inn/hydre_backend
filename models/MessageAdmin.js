@@ -7,3 +7,4 @@ const adminReplySchema = new mongoose.Schema({
   deleted: { type: Boolean, default: false },
 });
 const AdminReply = mongoose.model("Messrep", adminReplySchema);
+export default AdminReply

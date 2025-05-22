@@ -7,3 +7,4 @@ const userMessageSchema = new mongoose.Schema({
   deleted: { type: Boolean, default: false },
 });
 const UserMessage = mongoose.model("Message", userMessageSchema);
+export default UserMessage
