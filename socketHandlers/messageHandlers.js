@@ -5,96 +5,140 @@ import User from "../models/User.js";
 const connectedUsers = new Map();
 
 const messageHandlers = (io, socket) => {
-  const userId = socket.handshake.userId;
-  if (userId) connectedUsers.set(userId, socket.id);
+  // On récupère les infos d'authentification
+  const { userId, isAdmin } = socket.handshake.auth; 
 
-  // 🔹 Historique : côté utilisateur ou admin
+  if (userId) {
+    connectedUsers.set(userId, socket.id);
+    console.log(`[Connexion] ${isAdmin ? 'Admin' : 'User'} ${userId}`);
+  }
+
+  // 🔄 Gestion historique des messages
   socket.on("request_history", async () => {
     try {
-      if (userId === "admin") {
-        // ADMIN : voit les messages des utilisateurs
-        const messages = await Message.find({ deleted: false }).sort({ timestamp: 1 });
+      if (isAdmin) {
+        // Pour l'admin : afficher les messages des utilisateurs
+        const messages = await Message.find({ deleted: false })
+          .populate('userId', 'name', User)
+          .sort({ timestamp: -1 });
 
-        const userIds = [...new Set(messages.map((m) => m.userId))];
-        const users = await User.find({ _id: { $in: userIds } });
-        const userMap = new Map(users.map((u) => [u._id.toString(), u.name]));
-
-        const enriched = messages.map((m) => ({
-          ...m.toObject(),
-          userName: userMap.get(m.userId) || "Utilisateur inconnu",
+        // On enrichit chaque message pour le front
+        const enriched = messages.map(m => ({
+          _id: m._id,
+          userId: m.userId?._id?.toString() || "",
+          userName: m.userId?.name || "Utilisateur inconnu",
+          text: m.text,
+          timestamp: m.timestamp,
+          fromAdmin: false,
+          replyTo: m.replyTo || null,
+          toUserId: null
         }));
 
         socket.emit("message_history", enriched);
       } else {
-        // UTILISATEUR : ne voit que les réponses de l’admin
-        const replies = await AdminReply.find({ toUserId: userId, deleted: false }).sort({ timestamp: 1 });
+        // Pour l'utilisateur : afficher les réponses admin qui le concernent
+        const replies = await AdminReply.find({ 
+          toUserId: userId, 
+          deleted: false 
+        }).sort({ timestamp: -1 });
 
-        socket.emit("message_history", replies);
+        const enrichedReplies = replies.map(r => ({
+          _id: r._id,
+          userId: "admin",
+          userName: "Admin",
+          text: r.text,
+          timestamp: r.timestamp,
+          fromAdmin: true,
+          replyTo: r.replyTo || null,
+          toUserId: r.toUserId
+        }));
+
+        socket.emit("message_history", enrichedReplies);
       }
     } catch (err) {
-      socket.emit("error_message", { error: "Erreur lors de l'historique" });
+      socket.emit("error", "Erreur historique");
     }
   });
 
-  // 🔹 Envoi de message
-  socket.on("send_message", async (data) => {
-    const { text, toUserId } = data;
-
-    if (!userId || !text) {
-      return socket.emit("error_message", { error: "Données invalides" });
-    }
-
+  // ✉️ Gestion envoi de messages
+  socket.on("send_message", async ({ text, replyTo, toUserId }) => {
     try {
-      let saved, payload;
+      let newMessage;
 
-      if (userId === "admin" && toUserId) {
-        // ADMIN répond à un utilisateur
-        const AdminMessage = new AdminReply({
+      if (isAdmin) { // Réponse admin
+        newMessage = new AdminReply({
           toUserId,
           text,
+          replyTo,
+          fromAdmin: true
         });
 
-        saved = await AdminMessage.save();
+        const savedReply = await newMessage.save();
 
-        payload = {
-          ...saved.toObject(),
+        // Payload conforme à MessageData pour le front
+        const payload = {
+          _id: savedReply._id,
+          userId: "admin",
           userName: "Admin",
+          text: savedReply.text,
+          timestamp: savedReply.timestamp,
+          fromAdmin: true,
+          replyTo: savedReply.replyTo || null,
+          toUserId: savedReply.toUserId
         };
 
-        if (connectedUsers.has(toUserId)) {
-          io.to(connectedUsers.get(toUserId)).emit("receive_message", payload);
+        // Notifie l'utilisateur concerné
+        const targetSocket = connectedUsers.get(toUserId);
+        if (targetSocket) {
+          io.to(targetSocket).emit("new_reply", payload);
         }
-      } else {
-        // UTILISATEUR envoie un message
-        const UserMsg = new Message({
+        // Notifie aussi l'admin (pour mise à jour dashboard)
+        const adminSocket = connectedUsers.get('admin');
+        if (adminSocket) {
+          io.to(adminSocket).emit("new_reply", payload);
+        }
+      } else { 
+        newMessage = new Message({
           userId,
           text,
+          replyTo
         });
 
-        saved = await UserMsg.save();
+        const savedMessage = await newMessage.save();
+        // On enrichit pour l'admin
+        let userName = "Utilisateur";
+        try {
+          const user = await User.findById(userId);
+          if (user) userName = user.name;
+        } catch {}
 
-        payload = {
-          ...saved.toObject(),
-          userName: "Utilisateur",
+        const payload = {
+          _id: savedMessage._id,
+          userId: savedMessage.userId?.toString() || "",
+          userName,
+          text: savedMessage.text,
+          timestamp: savedMessage.timestamp,
+          fromAdmin: false,
+          replyTo: savedMessage.replyTo || null,
+          toUserId: savedReply.toUserId
         };
 
-        if (connectedUsers.has("admin")) {
-          io.to(connectedUsers.get("admin")).emit("receive_message", payload);
+        // Notifier l'admin
+        const adminSocket = connectedUsers.get('admin');
+        if (adminSocket) {
+          io.to(adminSocket).emit("receive_message", payload);
         }
       }
 
-      // Toujours renvoyer au sender
-      socket.emit("receive_message", payload);
-    } catch (err) {
-      console.error("[send_message] Erreur :", err);
-      socket.emit("error_message", { error: "Erreur lors de l'envoi" });
+ 
+
+    } catch (error) {
+      socket.emit("error", error.message);
     }
   });
 
-  // 🔌 Déconnexion
   socket.on("disconnect", () => {
     connectedUsers.delete(userId);
-    console.log(`[Déconnexion] Utilisateur ${userId}`);
   });
 };
 

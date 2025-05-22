@@ -1,12 +1,18 @@
 import mongoose from "mongoose";
 
 const adminReplySchema = new mongoose.Schema({
-  toUserId: { type: String, required: true },
+  adminId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
   text: { type: String, required: true },
-  timestamp: { type: Date, default: Date.now },
-  deleted: { type: Boolean, default: false },
+  replyTo: { 
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Message',
+    required: true
+  },
+  timestamp: { type: Date, default: Date.now }
 });
-
 const AdminReply = mongoose.model("Messrep", adminReplySchema);
-
 export default AdminReply;

@@ -13,7 +13,20 @@ const socketServer = (server) => {
     },
   });
 
+ 
+  io.use((socket, next) => {
+    const userId = socket.handshake.query.userId;
+    const isAdmin = socket.handshake.query.isAdmin === "true";
+    if (!userId) {
+      return next(new Error("userId manquant"));
+    }
+    socket.userId = userId;
+    socket.isAdmin = isAdmin;
+    next();
+  });
+
   io.on("connection", (socket) => {
+    
     messageHandlers(io, socket);
   });
 
@@ -21,4 +34,5 @@ const socketServer = (server) => {
 };
 
 export default socketServer;
+
 
