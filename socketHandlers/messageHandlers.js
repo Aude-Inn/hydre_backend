@@ -3,7 +3,7 @@ import Message from "../models/Message.js";
 
 
 const messageHandlers = (io, socket) => {
-  socket.on('getMessages', async () => {
+  socket.on('request_messages', async () => {
     try {
       const messages = await Message.find().sort({ timestamp: -1 });
       socket.emit('messages', messages);
