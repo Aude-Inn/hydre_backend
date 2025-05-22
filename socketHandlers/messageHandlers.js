@@ -2,8 +2,10 @@ import Message from "../models/Message.js";
 import User from "../models/User.js";
 
 const messageHandlers = (io, socket) => {
-  // Historique des messages
+  console.log("[Server] Nouvelle connexion socket:", socket.id);
+
   socket.on("request_history", async () => {
+    console.log("[Server] Historique demandé");
     try {
       const messages = await Message.find().sort({ timestamp: 1 });
       const userIds = [...new Set(messages.map((msg) => msg.userId))];
@@ -16,14 +18,18 @@ const messageHandlers = (io, socket) => {
         userName: userMap.get(msg.userId) || "Utilisateur inconnu",
       }));
 
+      console.log("[Server] Envoi de l'historique :", enrichedMessages.length, "messages");
+
       socket.emit("message_history", enrichedMessages);
     } catch (error) {
+      console.error("[Server] Erreur historique :", error);
       socket.emit("error_message", { error: "Erreur lors du chargement de l'historique" });
     }
   });
 
-  // Envoi de message
   socket.on("send_message", async (data) => {
+    console.log("[Server] Message reçu :", data);
+
     if (
       !data.userId || typeof data.userId !== "string" ||
       !data.text || typeof data.text !== "string"
@@ -42,21 +48,25 @@ const messageHandlers = (io, socket) => {
       const user = await User.findById(data.userId);
       const userName = user ? user.name : "Utilisateur inconnu";
 
-      io.emit("receive_message", {
+      const messageToSend = {
         _id: savedMessage._id,
         userId: savedMessage.userId,
         userName,
         text: savedMessage.text,
         timestamp: savedMessage.timestamp,
-      });
+      };
+
+      console.log("[Server] Broadcast du message :", messageToSend);
+
+      io.emit("receive_message", messageToSend);
     } catch (error) {
+      console.error("[Server] Erreur lors de l'envoi :", error);
       socket.emit("error_message", { error: "Erreur serveur lors de la sauvegarde" });
     }
   });
 
-  // Déconnexion
   socket.on("disconnect", () => {
-  
+    console.log("[Server] Déconnexion socket:", socket.id);
   });
 };
 
