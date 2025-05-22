@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Message from "../models/Message.js";
 import User from "../models/User.js";
 
