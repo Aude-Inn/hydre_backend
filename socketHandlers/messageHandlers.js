@@ -1,5 +1,5 @@
 import Message from "../models/Message.js";
-import AdminReply from "../models/Messrep.js";
+import AdminReply from "../models/MessageAdmin.js";
 import User from "../models/User.js";
 
 const connectedUsers = new Map();
