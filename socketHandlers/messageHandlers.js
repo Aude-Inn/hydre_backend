@@ -18,8 +18,7 @@ const messageHandlers = (io, socket) => {
         userName: userMap.get(msg.userId) || "Utilisateur inconnu",
       }));
 
-      console.log("[Server] Envoi de l'historique :", enrichedMessages.length, "messages");
-
+      console.log("[Server] Envoi de l'historique :", enrichedMessages);
       socket.emit("message_history", enrichedMessages);
     } catch (error) {
       console.error("[Server] Erreur historique :", error);
