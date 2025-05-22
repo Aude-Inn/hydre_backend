@@ -7,7 +7,7 @@ const messageHandlers = (io, socket) => {
   const userId = socket.handshake.userId;
   if (userId) connectedUsers.set(userId, socket.id);
 
-  // Historique des messages (admin)
+  // historiq
   socket.on("request_history", async () => {
     try {
       const messages = await Message.find().sort({ timestamp: 1 });
@@ -27,7 +27,7 @@ const messageHandlers = (io, socket) => {
     }
   });
 
-  // Inbox perso d'un utilisateur
+  // box user 
   socket.on("request_inbox", async (userId) => {
     try {
       const messages = await Message.find({ toUserId: userId }).sort({ timestamp: -1 });
@@ -37,9 +37,9 @@ const messageHandlers = (io, socket) => {
     }
   });
 
-  // Message utilisateur
+  // user msg
   socket.on("send_message", async (data) => {
-    const { userId, text, toUserId } = data;
+    const { userId, userName, text, toUserId } = data;
 
     if (!userId || typeof userId !== "string" || !text || typeof text !== "string") {
       return socket.emit("error_message", { error: "Données invalides" });
@@ -50,20 +50,23 @@ const messageHandlers = (io, socket) => {
         userId,
         text,
         toUserId: toUserId || null,
-        timestamp: new Date(),
       });
 
       const savedMessage = await newMessage.save();
-      const user = await User.findById(userId);
-      const userName = user ? user.name : "Utilisateur inconnu";
+
+      let finalUserName = userName;
+      if (!finalUserName) {
+        const user = await User.findById(userId);
+        finalUserName = user ? user.name : "Utilisateur inconnu";
+      }
 
       const messagePayload = {
         _id: savedMessage._id,
         userId: savedMessage.userId,
-        userName,
+        userName: finalUserName,
         text: savedMessage.text,
         timestamp: savedMessage.timestamp,
-        toUserId: savedMessage.toUserId || null,
+        toUserId: savedMessage.toUserId,
       };
 
       if (toUserId && connectedUsers.has(toUserId)) {
@@ -72,53 +75,51 @@ const messageHandlers = (io, socket) => {
         io.emit("receive_message", messagePayload);
       }
     } catch (error) {
+      console.error("[Server] Erreur send_message:", error);
       socket.emit("error_message", { error: "Erreur serveur lors de la sauvegarde" });
     }
   });
 
-  // 🔧 Message admin (réponse)
+  // admin Msg
   socket.on("admin_reply", async ({ userId, text, replyTo }) => {
-  console.log("[admin_reply] Reçu:", { userId, text, replyTo });
-
-  try {
-    const newMessage = new Message({
-      userId: "admin",
-      text,
-      toUserId: userId,
-      replyTo: replyTo || null,
-      timestamp: new Date(),
-    });
-
-    const savedMessage = await newMessage.save();
-
-    const messagePayload = {
-      _id: savedMessage._id,
-      userId: "admin",
-      userName: "Admin",
-      text: savedMessage.text,
-      timestamp: savedMessage.timestamp,
-      toUserId: userId,
-    };
-
-    console.log("[admin_reply] Message sauvegardé:", messagePayload);
-
-    if (connectedUsers.has(userId)) {
-      const targetSocketId = connectedUsers.get(userId);
-      console.log(`[admin_reply] Envoi du message à l'utilisateur connecté (${userId}) via socket ${targetSocketId}`);
-      io.to(targetSocketId).emit("receive_message", messagePayload);
-    } else {
-      console.warn(`[admin_reply] Utilisateur ${userId} non connecté. Message non envoyé.`);
+    if (!userId || !text) {
+      return socket.emit("error_message", { error: "Données de réponse invalides" });
     }
-  } catch (error) {
-    console.error("[admin_reply] Erreur :", error);
-    socket.emit("error_message", { error: "Échec de l'envoi du message admin" });
-  }
-});
 
-  // Déconnexion
-  socket.on("disconnect", () => {
-    if (userId) connectedUsers.delete(userId);
+    try {
+      const newMessage = new Message({
+        userId: "admin",
+        toUserId: userId,
+        text,
+        replyTo: replyTo || null,
+        timestamp: new Date(),
+      });
+
+      await newMessage.save();
+
+      const replyPayload = {
+        ...newMessage.toObject(),
+        userName: "Admin",
+        fromAdmin: true,
+      };
+
+      const targetSocketId = connectedUsers.get(userId);
+      if (targetSocketId) {
+        io.to(targetSocketId).emit("receive_message", replyPayload);
+      }
+
+     
+      socket.emit("receive_message", replyPayload);
+    } catch (error) {
+      console.error("[Server] Erreur admin_reply:", error);
+      socket.emit("error_message", { error: "Erreur lors de l'envoi de la réponse" });
+    }
   });
-};
+
+  // Déco
+socket.on("disconnect", () => {
+  connectedUsers.delete(userId);
+  console.log(`[Socket] Utilisateur déconnecté: ${userId}`);
+})}
 
 export default messageHandlers;
