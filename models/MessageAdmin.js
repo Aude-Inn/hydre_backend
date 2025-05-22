@@ -6,5 +6,7 @@ const adminReplySchema = new mongoose.Schema({
   timestamp: { type: Date, default: Date.now },
   deleted: { type: Boolean, default: false },
 });
+
 const AdminReply = mongoose.model("Messrep", adminReplySchema);
-export default AdminReply
+
+export default AdminReply;
