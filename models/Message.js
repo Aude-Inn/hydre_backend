@@ -1,11 +1,22 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const messageSchema = new mongoose.Schema({
-  userId: String,
-  text: String,
-  timestamp: Date,
+  userId: {
+    type: String,
+    required: true,
+    index: true
+  },
+  text: {
+    type: String,
+    required: true,
+    minlength: 1,
+    maxlength: 500
+  },
+  timestamp: {
+    type: Date,
+    default: Date.now
+  }
 });
 
-const Message = mongoose.model('Message', messageSchema);
-
+const Message = mongoose.model("Message", messageSchema);
 export default Message;
