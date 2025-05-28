@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 
+// Midd Protect Token
 export const protect = (req, res, next) => {
   const authHeader = req.headers.authorization;
 

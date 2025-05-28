@@ -1,6 +1,7 @@
 import { Server } from "socket.io";
 import messageHandlers from "./socketHandlers/messageHandlers.js";
 
+// Socket Server
 const socketServer = (server) => {
   const io = new Server(server, {
     cors: {

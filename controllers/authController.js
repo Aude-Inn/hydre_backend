@@ -41,7 +41,7 @@ export const loginUser = async (req, res) => {
   }
 };
 
-// Inscription 
+// Register
 export const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -64,7 +64,7 @@ export const logoutUser = (req, res) => {
   res.json({ message: "Déconnexion réussie" });
 };
 
-// Demande de réinitialisation du mdp
+// Réinit MDP
 export const forgotPassword = async (req, res) => {
   const { email } = req.body;
 
@@ -74,7 +74,7 @@ export const forgotPassword = async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(200).json({
-        message: "Si cet email existe, un lien de réinitialisation a été envoyé.",
+        message: "Si cette adresse email est bien dans nos fichiers, un lien de réinitialisation a été envoyé ! Pense à jeter un œil dans tes spams ou courriers indésirables… on sait jamais, les mails aiment parfois jouer à cache-cache",
       });
     }
 
@@ -90,14 +90,14 @@ export const forgotPassword = async (req, res) => {
     }
 
     res.status(200).json({
-      message: "Si cet email existe, un lien de réinitialisation a été envoyé.",
+      message: "Si cette adresse email est bien dans nos fichiers, un lien de réinitialisation a été envoyé ! Pense à jeter un œil dans tes spams ou courriers indésirables… on sait jamais, les mails aiment parfois jouer à cache-cache",
     });
   } catch {
     res.status(500).json({ message: "Erreur serveur" });
   }
 };
 
-// gestion du reset pass et new token pour new pass
+// Reset pass Token New pass
 
 export const resetPassword = async (req, res) => {
   const { token } = req.params;

@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import Message from "../models/Message.js";
 import User from "../models/User.js";
 
+// Mess Handlers Socket
 const messageHandlers = (io, socket) => {
   console.log("[Server] Nouvelle connexion socket:", socket.id);
 

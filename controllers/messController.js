@@ -1,5 +1,6 @@
 import Message from '../models/Message.js';
 
+// Delete mess
 export const deleteMessage = async (req, res) => {
   try {
     await Message.findByIdAndDelete(req.params.id);

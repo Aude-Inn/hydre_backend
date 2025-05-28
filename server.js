@@ -7,9 +7,9 @@ import gameRoutes from "./routes/gameRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import messRoutes from "./routes/messRoutes.js";
 import notifRoutes from "./routes/notifRoutes.js";
-
 import corsMiddleware from "./middleware/corsMiddleware.js";
 
+// Socket Server
 import { createServer } from "http";
 import socketServer from "./socketServer.js";
 
@@ -24,7 +24,7 @@ const server = createServer(app);
 app.use(express.json());
 app.use(corsMiddleware);
 
-// Routes API
+// Road API
 app.use("/api/auth", authRoutes);
 app.use("/api/games", gameRoutes);
 app.use("/api/messages", messRoutes);
@@ -32,11 +32,11 @@ app.use("/api/notifs", notifRoutes);
 app.use("/api/users", userRoutes);
 
 
-
+// Socket go
 const io = socketServer(server);
 app.set("io", io); 
 
-// Démarrage 
+// Let's go
 const PORT = process.env.PORT || 5005;
 server.listen(PORT, () => {
   console.log(`🚀 Serveur actif sur http://localhost:${PORT}`);

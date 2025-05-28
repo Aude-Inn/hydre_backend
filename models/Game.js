@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+// Game Schema
 const gameSchema = new mongoose.Schema({
   name: { type: String, required: true },
   releaseDate: { type: Date, required: true },

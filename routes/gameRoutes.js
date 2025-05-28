@@ -9,22 +9,22 @@ import {
 } from "../controllers/gameController.js";
 
 const router = express.Router();
-// créer un jeu
+// Create
 router.post("/", createGame);       
 
-// all games
+// All games
 router.get("/", getAllGames); 
 
-// search games
+// Search games
 router.get("/search", searchGames); 
 
-// game by id
+// Game by id
 router.get("/:id", getGame);         
 
-// update game
+// Update game
 router.put("/:id", updateGame);      
 
-// delete game by id
+// Delete game by id
 router.delete("/:id", deleteGame);   
 
 export default router;

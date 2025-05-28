@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+// Mess Schema
 const messageSchema = new mongoose.Schema({
   userId: {
     type: String,

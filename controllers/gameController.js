@@ -131,7 +131,7 @@ export const deleteGame = async (req, res) => {
   }
 };
 
-// recherche games
+// Search games
 export const searchGames = async (req, res) => {
   const search = req.query.search?.trim();
   console.log("Recherche côté serveur :", search);

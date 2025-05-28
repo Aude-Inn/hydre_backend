@@ -1,6 +1,6 @@
 import User from "../models/User.js";
 
-// Info utilisateur par son id
+// Info user by ID
 export const getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -14,7 +14,7 @@ export const getUserById = async (req, res) => {
   }
 };
 
-// Info utilisateurs
+// All users
 export const getAllUsers = async (req, res) => {
   try {
     const users = await User.find();

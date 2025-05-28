@@ -3,7 +3,7 @@ import { getNotifications } from "../controllers/notifController.js";
 
 const router = express.Router();
 
-// Récupérer les notif
+// Get Notifs
 router.get("/", getNotifications);
 
 export default router;

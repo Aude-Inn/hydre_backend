@@ -1,5 +1,6 @@
 import Notification from '../models/Notification.js';
 
+// Get Notif
 export const getNotifications = async (req, res) => {
   try {
     const fiveDaysAgo = new Date(Date.now() - 5 * 24 * 60 * 60 * 1000);

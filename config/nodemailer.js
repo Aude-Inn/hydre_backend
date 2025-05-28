@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-
+// Mail/Reset
 const transporter = nodemailer.createTransport({
   service: "gmail", 
   auth: {
@@ -21,14 +21,15 @@ const sendResetPasswordEmail = async (email, name, token) => {
     to: email,  
     subject: "Réinitialisation de votre mot de passe", 
     html: `  <!-- HTML contenu du message -->
-      <h1>Bonjour ${name},</h1>
-      <p>Nous avons reçu une demande de réinitialisation de mot de passe pour votre compte.</p>
-      <p>Cliquez sur le lien ci-dessous pour réinitialiser votre mot de passe :</p>
+      <h1>Hello ${name},</h1>
+      <p>On dirait que tu as perdu ton mot de passe… Pas de stress, ça arrive aux meilleurs. On est là pour te filer un coup de main !</p>
+      <p>Clique sur le bouton ci-dessous pour en créer un tout neuf (tout beau, tout sécurisé) :</p>
       <a href="${resetUrl}" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">Réinitialiser mon mot de passe</a>
-      <p>Ou copiez ce lien dans votre navigateur :</p>
+      <p>Tu peux aussi copier-coller ce lien dans ton navigateur si tu préfères la méthode old-school :</p>
       <p>${resetUrl}</p>
-      <p><strong>Ce lien expire dans 1 heure.</strong></p>
-      <p>Si vous n'avez pas demandé de réinitialisation de mot de passe, vous pouvez ignorer cet email.</p>
+      <p><strong>Attention : ce lien expire dans 1 heure ! Alors ne traîne pas trop </strong></p>
+      <p>Si tu n’as pas demandé de réinitialisation, pas de souci — tu peux ignorer ce message. Rien ne sera modifié. À très vite,
+      Hydre !</p>
     `,
   };
 

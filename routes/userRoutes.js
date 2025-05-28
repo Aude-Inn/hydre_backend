@@ -17,10 +17,10 @@ router.get("/", protect, getAllUsers);
 // Get user by ID
 router.get("/:id", protect, getUserById);
 
-// update user by id
+// Update user by id
 router.put("/:id", protect, updateUserById);
 
-// delete user by id
+// Delete user by id
 router.delete("/:id", protect, deleteUser);
 
 export default router;

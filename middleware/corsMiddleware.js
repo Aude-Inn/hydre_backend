@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+// Midd Cors
 const corsMiddleware = cors({
   origin: (origin, callback) => {
     console.log("🌐 Requête provenant de :", origin);

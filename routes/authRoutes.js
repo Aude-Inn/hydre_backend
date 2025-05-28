@@ -9,15 +9,15 @@ import {
 
 const router = express.Router();
 
-// l'inscription
+// Register
 router.post("/register", registerUser);
-// Connexion
+// Co
 router.post("/login", loginUser);
-// Déconnexion
+// Déco
 router.post("/logout", logoutUser);
-// forgot MDP
+// Forgot MDP
 router.post('/forgot-password', forgotPassword);
-// reset MDP
+// Reset MDP
 router.post('/reset-password/:token', resetPassword); 
 
 export default router;
