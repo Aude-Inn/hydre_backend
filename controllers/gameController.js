@@ -153,7 +153,6 @@ export const searchGames = async (req, res) => {
 };
 
 // Top games
-
 export const topGames = async (req, res) => {
   try {
     const topGames = await Game.find({ averageRating: { $ne: null, $gte: 0 } })
