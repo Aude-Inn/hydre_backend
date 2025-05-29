@@ -156,14 +156,11 @@ export const searchGames = async (req, res) => {
 
 export const topGames = async (req, res) => {
   try {
-    console.log("Requête reçue /api/games/top");
     const topGames = await Game.find({ averageRating: { $ne: null, $gte: 0 } })
       .sort({ averageRating: -1 })
       .limit(5);
-    console.log("Jeux récupérés :", topGames);
     res.json(topGames);
   } catch (err) {
-    console.error("Erreur dans topGames :", err.message, err.stack);
     res.status(500).json({ error: 'Erreur serveur dans topGames' });
   }
 };
