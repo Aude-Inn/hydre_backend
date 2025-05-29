@@ -4,6 +4,7 @@ import {
   getGame,
   getAllGames,
   searchGames,
+  topGames,
   updateGame,
   deleteGame,
 } from "../controllers/gameController.js";
@@ -17,6 +18,9 @@ router.get("/", getAllGames);
 
 // Search games
 router.get("/search", searchGames); 
+
+// Top games
+router.get('/top', topGames);
 
 // Game by id
 router.get("/:id", getGame);         
